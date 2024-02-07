@@ -1,0 +1,26 @@
+const Model = require('../util/model')
+const model = new Model()
+
+
+/**
+ * @returns prediction result & duration
+ */
+async function detectText (req, res) {
+  const start = new Date()
+  const rawImage = req.body
+  let prediction = []
+  try {
+    prediction = await model.detect(rawImage)
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: 'Internal server error' })
+  }
+  return res.status(200).json({
+    duration: new Date() - start,
+    result: prediction.data.text,
+  })
+}
+
+module.exports = {
+  detectText
+}
